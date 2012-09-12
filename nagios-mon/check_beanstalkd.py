@@ -50,16 +50,24 @@ from optparse import OptionParser
 
 
 def beanstalkc_installed():
-	__doc__ = """Make sure Python has beanstalkc, pyyaml
-			try: pip install beanstalkc pyyaml"""
+	__doc__ = "Make sure Python has beanstalkc, pyyaml. Check pip freeze"
 	try:
 		import beanstalkc
 	catch Exception:
-		print __doc__
+		return __doc__
 
-def beanstalkd_up():
-	print "OK Beanstalk is UP";
+def beanstalkd_up(hostname,port):
+	bs = beanstalkc.Connection(host=hostname,port=port)
+	return "OK, Beanstalk is UP";
 
+def beanstalkd_stats():
+	bs = beanstalkc.Connection(host=hostname,port=port)
+	stat = bs.stats()
+	report = """Uptime:%(uptime)s; Total jobs:%(total_jobs)s; Tubes:%(tubes)s"""	
+	return report % {'uptime': stat['uptime'],
+			 'total_jobs': stat['total-jobs'],
+			 'tubes': stat['current-tubes']
+			 }
 
 def main():
 	parser = OptionParser() # __doc__
@@ -72,7 +80,8 @@ def main():
 	(options, args) = parser.parse_args()
 	#print options
 	beanstalkc_installed()
-	beanstalkd_up()
+	print beanstalkd_up()
+	print beanstalkd_stats()
 
 if __name__=='__main__':
   sys.exit(main())

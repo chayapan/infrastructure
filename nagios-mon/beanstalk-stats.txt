@@ -1,0 +1,4 @@
+stats=serv.stats()
+>>> stats
+{'current-connections': 1, 'max-job-size': 65535, 'cmd-release': 0, 'cmd-reserve': 10, 'pid': 30250, 'cmd-bury': 0, 'current-producers': 1, 'total-jobs': 8, 'current-jobs-ready': 7, 'cmd-peek-buried': 0, 'current-tubes': 2, 'current-jobs-delayed': 0, 'uptime': 1877205, 'cmd-watch': 0, 'job-timeouts': 7, 'cmd-stats': 3, 'rusage-stime': 0.0, 'version': '1.4.3', 'current-jobs-reserved': 0, 'current-jobs-buried': 0, 'cmd-reserve-with-timeout': 13, 'cmd-put': 8, 'cmd-pause-tube': 0, 'cmd-list-tubes-watched': 7, 'cmd-list-tubes': 1, 'current-workers': 1, 'cmd-list-tube-used': 4, 'cmd-ignore': 0, 'current-waiting': 0, 'cmd-peek': 0, 'cmd-peek-ready': 0, 'cmd-peek-delayed': 0, 'cmd-touch': 0, 'binlog-oldest-index': 0, 'binlog-current-index': 0, 'cmd-use': 2, 'total-connections': 3, 'cmd-delete': 1, 'binlog-max-size': 10485760, 'cmd-stats-job': 0, 'rusage-utime': 0.004, 'cmd-stats-tube': 0, 'cmd-kick': 0, 'current-jobs-urgent': 6}
+
