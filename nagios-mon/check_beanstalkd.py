@@ -35,6 +35,14 @@ Usage: check_beanstalkd.py -H <host> [-p <port>] [-t <tube>] [-w <warn_time>] [-
    -v, --verbose
       Show details for command-line debugging (Nagios may truncate output)
 
+Examples:
+	./check_beanstalkd -H 127.0.0.1 -p 11300
+
+put some jobs into beanstalk
+import string,random
+word = lambda : "".join([ random.choice(string.ascii_lowercase) for i in range(rand.int) ])
+[ bs.put(word()) for i in range(500) ]
+
 Credits:
   mon api:
 	http://search.cpan.org/~gbarr/Nagios-Plugin-Beanstalk-0.04/lib/Nagios/Plugin/Beanstalk.pm
@@ -48,22 +56,20 @@ beanstalkc 0.3.0 (http://pypi.python.org/pypi/beanstalkc/0.3.0)
 import platform, sys, os
 from optparse import OptionParser
 
-
-def beanstalkc_installed():
-	__doc__ = "Make sure Python has beanstalkc, pyyaml. Check pip freeze"
-	try:
-		import beanstalkc
-	catch Exception:
-		return __doc__
+try:
+	import beanstalkc
+except Exception:
+	print "Make sure Python has beanstalkc, pyyaml. Check pip freeze"
+	sys.exit(1)
 
 def beanstalkd_up(hostname,port):
 	bs = beanstalkc.Connection(host=hostname,port=port)
 	return "OK, Beanstalk is UP";
 
-def beanstalkd_stats():
+def beanstalkd_stats(hostname,port):
 	bs = beanstalkc.Connection(host=hostname,port=port)
 	stat = bs.stats()
-	report = """Uptime:%(uptime)s; Total jobs:%(total_jobs)s; Tubes:%(tubes)s"""	
+	report = """Uptime:%(uptime)10d; Total jobs:%(total_jobs)7d; Tubes:%(tubes)3d"""	
 	return report % {'uptime': stat['uptime'],
 			 'total_jobs': stat['total-jobs'],
 			 'tubes': stat['current-tubes']
@@ -71,7 +77,7 @@ def beanstalkd_stats():
 
 def main():
 	parser = OptionParser() # __doc__
-	parser.add_option('-H', '--hostname',	dest="hostaddress",
+	parser.add_option('-H', '--hostname',	dest="host",
 		help="Beanstalkd hostname")
 	parser.add_option('-p', '--port',	dest="port")
 	parser.add_option('-c',dest="threshold_critical")
@@ -79,9 +85,11 @@ def main():
 
 	(options, args) = parser.parse_args()
 	#print options
-	beanstalkc_installed()
-	print beanstalkd_up()
-	print beanstalkd_stats()
+	host = options.host
+	port = int(options.port)
+	print beanstalkd_up(host,port)
+	print beanstalkd_stats(host,port)
+	return 0
 
 if __name__=='__main__':
   sys.exit(main())
