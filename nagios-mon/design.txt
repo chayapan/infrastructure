@@ -1,0 +1,7 @@
+=== Additional Nagios Plugins ===
+- beanstalkd
+- couchdb
+- memcached
+
+
+We'll use Python!
