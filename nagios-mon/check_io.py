@@ -14,10 +14,11 @@ critical = {'iowait':20.0}
 class Output:
 	def __init__(self):
 		self.status = 'UNKNOWN'
-		self.line = ' ' 
+		self.line = ' '
+		self.code = 0
 	def report(self):
 		print self.status + " %CPU" + self.line
-		sys.exit(0)
+		sys.exit(self.code)
 
 def check(output):
 	f=open(TMP,'w')
@@ -29,7 +30,7 @@ def check(output):
 	# CPU: %user, %nice, $system, %iowait, %steal, $idle
 	u,nice,s,iow,stl,idl = data[3].split()
 	output.status = "OK"
-	output.line += "usr %s|sys %s|iowait %s|idle %s" % (u,s,iow,idl)
+	output.line += "usr %s sys %s iowait %s idle %s" % (u,s,iow,idl)
 
 	# Devices:
 	#devs = data[5:-2]
@@ -38,8 +39,10 @@ def check(output):
 	#	output.line += "|".join(d.split()) + "\n"
 
 	if warning['iowait'] > iow:
+		output.code = 1
 		output.status = "WARNING"
 	if critical['iowait'] > iow:
+		output.code = 2
 		output.status = "CRITICAL"
 	#print iow, warning['iowait'] > iow, warning['iowait']
 
