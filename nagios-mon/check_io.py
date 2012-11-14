@@ -4,7 +4,7 @@
 Target OS: Ubuntu, CentOS
 Python version: 2.6 +
 """
-import os.path,subprocess
+import sys,os.path,subprocess
 
 IOSTAT='/usr/bin/iostat'
 TMP='/tmp/nrpeiostatresult'
