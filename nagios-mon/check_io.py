@@ -12,13 +12,15 @@ warning  = {'iowait':2.0}
 critical = {'iowait':20.0}
 
 class Output:
+        code = {'UNKNOWN':2, 'CRITICAL':2, 'WARNING':1, 'OK':0}
 	def __init__(self):
 		self.status = 'UNKNOWN'
 		self.line = ' '
-		self.code = 0
 	def report(self):
-		print self.status + " %CPU" + self.line
-		sys.exit(self.code)
+                print self
+		sys.exit(self.code[self.status])
+        def __unicode__():
+                return self.status + " %CPU" + self.line
 
 def check(output):
 	f=open(TMP,'w')
@@ -50,8 +52,10 @@ def check(output):
 	return output
 
 if __name__ == '__main__':
+        status = Output()
 	if not os.path.exists(IOSTAT):
-		print "UNKNOWN: iostat package not found"
-		sys.exit(2)
+                status.status = 'UNKNOWN'
+		status.line = "iostat package not found"
 	else:
-		check(Output()).report()
+		status = check(status)
+	status.report()
