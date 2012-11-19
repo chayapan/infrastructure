@@ -1,13 +1,15 @@
 #!/usr/bin/env python
-"""Nagios plugin for CPU time monitoring
-OS: Ubuntu, CentOS
+"""Nagios plugin for CPU time monitoring. Focusing on %iowait.
+OS: Ubuntu, CentOS (requires sysstat package)
 Python version: 2.6 +
-Requires sysstat package
 """
 import sys,os.path,subprocess
 
 IOSTAT='/usr/bin/iostat'
 TMP='/tmp/nrpeiostatresult'
+# Device we're interested in
+DEV=['sda','sdb','sdc','sdd','vda','vbd','vdc','vdd']
+
 warning  = {'iowait':2.0}
 critical = {'iowait':20.0}
 
@@ -32,10 +34,12 @@ def check(output):
     output.line += "usr %s sys %s iowait %s idle %s" % (u,s,iow,idl)
 
     # Devices:
-    #devs = data[5:-2]
-    #output.line += "\n"
-    #for d in devs:
-    #   output.line += "|".join(d.split()) + "\n"
+    devs = data[5:-2]
+    output.line += " "+",".join(devs[0].split())  # column headers
+    for line in devs:
+	dev = line.split()
+        if dev[0] in DEV:
+            output.line += " " + ",".join(line.split()) # device row
 
     if warning['iowait'] > iow:
         output.code = 1
@@ -44,15 +48,13 @@ def check(output):
         output.code = 2
         output.status = "CRITICAL"
     #print iow, warning['iowait'] > iow, warning['iowait']
-
-
     return output
 
 if __name__ == '__main__':
     status = Output()
     if not os.path.exists(IOSTAT):
         status.status = 'UNKNOWN'
-        status.line = "iostat package not found"
+        status.line = " iostat not found (install sysstat package)"
     else:
         status = check(status)
     print status
